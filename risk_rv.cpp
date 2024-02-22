@@ -44,6 +44,58 @@ int factorial(int n) {
 }
 
 
+void saveX(vector<roll> rolls, int SIZE) {
+    // Sort for Random Variable X: the roll with most chances to win is the greatest
+    sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
+        if (a.distribution[0] < b.distribution[0]) {
+            return true;
+        } 
+        else if (a.distribution[0] == b.distribution[0]) {
+            return a.distribution[1] < b.distribution[1];
+        }
+        
+        return false;
+    });
+
+    ofstream file;
+    file.open("randomVariableX.txt");
+    file << "Random Variable X: the roll with most chances to win is the greatest" << endl;
+    file << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
+    for (roll r : rolls) {
+        file << r.i << "-" << r.ii << ":\t\t" << r.chance << "\t\t";
+        for (int i = 0; i < SIZE + 1; i++) {
+            file << r.distribution[i] << "\t\t";
+        }
+        file << endl;
+    }
+    file.close();
+}
+
+void saveY(vector<roll> rolls, int SIZE) {
+    // Sort for Random Variable Y: the roll with most chances to not lose is the greatest
+    sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
+        if (a.distribution[2] > b.distribution[2]) {
+            return true;
+        } 
+        
+        return false;
+    });
+
+
+    ofstream file2;
+    file2.open("randomVariableY.txt");
+    file2 << "Random Variable Y: the roll with most chances to not lose is the greatest" << endl;
+    file2 << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
+    for (roll r : rolls) {
+        file2 << r.i << "-" << r.ii << ":\t\t" << r.chance << "\t\t";
+        for (int i = 0; i < SIZE + 1; i++) {
+            file2 << r.distribution[i] << "\t";
+        }
+        file2 << endl;
+    }
+    file2.close();
+}
+
 int main(int argv, char** argc) {
     srand(time(NULL));
     int i = 1, ii = 1, 
@@ -95,49 +147,15 @@ int main(int argv, char** argc) {
         }
     }
 
-    // Sort for Random Variable X: the roll with most chances to win is the greatest
-    sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
-        if (a.distribution[0] < b.distribution[0]) {
-            return true;
-        } 
-        else if (a.distribution[0] == b.distribution[0]) {
-            return a.distribution[1] < b.distribution[1];
-        }
-        
-        return false;
-    });
-
-    ofstream file;
-    file.open("randomVariableX.txt");
+    count = 0;
     for (roll r : rolls) {
-        file << r.i << "-" << r.ii << ":\t\t";
-        for (int i = 0; i < SIZE + 1; i++) {
-            file << r.distribution[i] << "\t";
-        }
-        file << endl;
+        count += r.chance;
     }
-    file.close();
+    cout << "Possible rolls: " << count << endl;
 
-    // Sort for Random Variable Y: the roll with most chances to not lose is the greatest
-    sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
-        if (a.distribution[2] > b.distribution[2]) {
-            return true;
-        } 
-        
-        return false;
-    });
+    saveX(rolls, SIZE);
+    saveY(rolls, SIZE);
 
-
-    ofstream file2;
-    file2.open("randomVariableY.txt");
-    for (roll r : rolls) {
-        file2 << r.i << "-" << r.ii << ":\t\t";
-        for (int i = 0; i < SIZE + 1; i++) {
-            file2 << r.distribution[i] << "\t";
-        }
-        file2 << endl;
-    }
-    file2.close();
     return 0;
 
 }
