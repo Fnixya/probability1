@@ -74,6 +74,36 @@ void print_vector(vector<int> v) {
     cout << endl;
 }
 
+void genRdata(vector<roll> rolls, int SIZE) {
+    // Sort for Random Variable X: the roll with most chances to win is the greatest
+    ofstream file;
+    file.open("rvXdata.txt");
+    file << "x <- c(";
+
+    // file << "\t\t\t" << "Sample\t\t" << "perm..\t" << "comb..\t" << "cum..\t" << "0\t1\t2\n" << endl;
+    int count = 0;
+    for (roll r : rolls) {        
+        file << ", " << count++;  
+    }
+    file << ")" << endl
+        << "y <- c(";
+    
+    for (roll r : rolls) {        
+        file << ", " << r.permutations;  
+    }
+    file << ")" << endl
+        << "y <- c(";
+    
+    int cummulation = 0;
+    for (roll r : rolls) {    
+        cummulation += r.permutations;    
+        file << ", " << cummulation;  
+    }
+    file << ")" << endl;
+
+    file.close();
+}
+
 void saveX(vector<roll> rolls, int SIZE) {
     // Sort for Random Variable X: the roll with most chances to win is the greatest
     ofstream file;
@@ -309,6 +339,7 @@ int main(int argv, char** argc) {
     cout << "Possible rolls: " << count << endl;
 
     saveX(rolls, SIZE);
+    genRdata(rolls, SIZE);
     // saveY(rolls, SIZE);
     // saveZ(rolls, SIZE);
 
