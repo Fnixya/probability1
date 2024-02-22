@@ -3,19 +3,44 @@
 #include "cstdlib"
 #include "vector"
 #include "set"
+#include "map"
+#include "math.h"
 #include <fstream>
 
 using namespace std;
 
+
+// ___________________________________________________________________________________
+
+
 struct roll {
-    int i, ii;
-    int chance;
+    vector<int> dices;
+    int combinations, permutations;
     vector<float> distribution;
 };
 
-int challenge(int size, vector<int> &r) {
-    vector<int> b(size, 0);
-    for (int i = 0; i < size; i++) {
+
+// ___________________________________________________________________________________
+
+
+// class Battle {
+//     private:
+
+//     public:
+//         Battle();
+//         int challenge(int red_size, int blue_size, vector<int> &r);
+//         int factorial(int n);
+//         void print_vector(vector<int> v);
+//         void saveX(vector<roll> rolls, int SIZE);
+//         void saveY(vector<roll> rolls, int SIZE);    
+// }
+
+// ___________________________________________________________________________________
+
+
+int challenge(int red_size, int blue_size, vector<int> &r) {
+    vector<int> b(blue_size, 0);
+    for (int i = 0; i < blue_size; i++) {
         b[i] = rand() % 6 + 1;
     }
     
@@ -23,8 +48,7 @@ int challenge(int size, vector<int> &r) {
     sort(b.begin(), b.end(), greater<int>());
 
     int defeated = 0;
-    for (int i = 0; i < size; i++) {
-        // cout << r[i] << " vs " << b[i] << "\n";
+    for (int i = 0; i < blue_size; i++) {
         if (r[i] <= b[i]) {
             defeated += 1;
         }
@@ -41,6 +65,13 @@ int factorial(int n) {
         return 1;
     }
     return n * factorial(n - 1);
+}
+
+void print_vector(vector<int> v) {
+    for (auto i : v) {
+        cout << i << " ";
+    }
+    cout << endl;
 }
 
 
@@ -61,8 +92,12 @@ void saveX(vector<roll> rolls, int SIZE) {
     file.open("randomVariableX.txt");
     file << "Random Variable X: the roll with most chances to win is the greatest" << endl;
     file << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
-    for (roll r : rolls) {
-        file << r.i << "-" << r.ii << ":\t\t" << r.chance << "\t\t";
+    for (roll r : rolls) {        
+        file << r.dices[0];
+        for (int i = 1; i < r.dices.size(); i++) {
+            file << "-" << r.dices[i];
+        }
+        file << ":\t\t" << r.permutations << "\t\t";
         for (int i = 0; i < SIZE + 1; i++) {
             file << r.distribution[i] << "\t\t";
         }
@@ -87,7 +122,11 @@ void saveY(vector<roll> rolls, int SIZE) {
     file2 << "Random Variable Y: the roll with most chances to not lose is the greatest" << endl;
     file2 << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
     for (roll r : rolls) {
-        file2 << r.i << "-" << r.ii << ":\t\t" << r.chance << "\t\t";
+        file2 << r.dices[0];
+        for (int i = 1; i < r.dices.size(); i++) {
+            file2 << "-" << r.dices[i];
+        }
+        file2 << ":\t\t" << r.permutations << "\t\t";
         for (int i = 0; i < SIZE + 1; i++) {
             file2 << r.distribution[i] << "\t";
         }
@@ -98,34 +137,120 @@ void saveY(vector<roll> rolls, int SIZE) {
 
 int main(int argv, char** argc) {
     srand(time(NULL));
-    int i = 1, ii = 1, 
-        SIZE = 2, TESTS = 10000;
-    vector<int> r(SIZE, 0);
+    int count = 0, it,  
+        SIZE, TESTS = 10000,
+        red_size, blue_size;
+    
+    cout << "Define the battle scenario (number of red dice VS number of blue dice): ";
+    cin >> red_size >> blue_size;
 
-    roll rr = {0, 0, 0, vector<float>(SIZE + 1, 0)};
-    vector<roll> rolls(21, rr);
+    SIZE = min(red_size, blue_size);
+    vector<int> r(SIZE, 0), 
+                dices(SIZE, 1);
+    roll rr = {dices, 0, 0, vector<float>(SIZE + 1, 0)};
 
-    int count = 0;
-    cout << "Defeated\tOccurrences\t0\t1\t2\n" << endl;
-    while (i < 7) {
-        r[0] = i; r[1] = ii;
-        
+    int total_rolls = 0;
+    for (int i = 1; i <= 6; i++) {
+        total_rolls += pow(i, SIZE);
+    }
+    vector<roll> rolls(total_rolls, rr);
+
+    cout << "Defeated\tPermutations\tCombinations";
+    for (int i = 0; i < SIZE + 1; i++) {
+        cout << "\t" << i;
+    }
+    cout << endl << endl;
+    while (dices[0] < 7) {
         // TESTS
         vector<int> distribution(SIZE + 1, 0);
         for (int i = 0; i < TESTS; i++) {
-            distribution[challenge(SIZE, r)]++;
+            distribution[challenge(red_size, blue_size, dices)]++;
         }
 
+        cout << "!";    
+
         // UPDATE ROLL INFORMATION
-        rolls[count].i = i;
-        rolls[count].ii = ii;
+        rolls[count].dices = dices;
+
+        cout << "!";
+
+        // Iterar dados extras
         set<int> s;
-        for (int iii = 1; iii <= ii; iii++) {
-            s.clear();
-            s.insert(i);
-            s.insert(ii);
-            s.insert(iii);
-            rolls[count].chance += 6 / factorial(4-s.size());
+        map<int, int> p_hash;
+        vector<int> remain(red_size - SIZE, 1);
+        if (remain.size() == 0) {
+            p_hash.clear();
+            for (auto el : dices) {
+                p_hash[el]++;
+            }
+            for (auto el : remain) {
+                p_hash[el]++;
+            }
+
+            int denominator = 1;
+            for (auto el : p_hash) {
+                denominator *= factorial(el.second);
+            }
+
+            rolls[count].combinations = 1;
+            int c = denominator;
+            rolls[count].permutations += factorial(red_size) / c;
+        }
+        else if (remain.size() == 1) {
+            while (remain[0] <= dices[SIZE - 1]) {
+                s.clear();
+                for (int i = 0; i < SIZE; i++) {
+                    s.insert(dices[i]);
+                }
+                s.insert(remain[0]);
+
+                rolls[count].combinations++;
+                rolls[count].permutations += factorial(red_size) / factorial(red_size + 1 - s.size());
+                remain[0]++;
+            }
+        }
+        else {
+            while (remain[0] <= dices[SIZE - 1]) {
+                // cout << remain[0] << "#" << remain[1] << " "; 
+                p_hash.clear();
+                for (auto el : dices) {
+                    p_hash[el]++;
+                }
+                for (auto el : remain) {
+                    p_hash[el]++;
+                }
+
+                int denominator = 1;
+                for (auto el : p_hash) {
+                    denominator *= factorial(el.second);
+                }
+
+                rolls[count].combinations++;
+                int c = denominator;
+                rolls[count].permutations += factorial(red_size) / c;
+
+                // s.clear();
+                // for (int i = 0; i < SIZE; i++) {
+                //     s.insert(dices[i]);
+                // }
+                // for (auto el : remain) {
+                //     s.insert(el);
+                // }
+
+                // rolls[count].combinations++;
+                // int c = factorial(red_size) / factorial(red_size + 1 - s.size());
+                // rolls[count].permutations += c;
+
+                // cout << c << ",";
+
+                it = red_size - SIZE - 1;
+                remain[it]++;
+                while ((it > 0) && (remain[it-1] < remain[it])) {
+                    remain[it] = 1;
+                    remain[it - 1]++;
+                    it--;
+                }
+            }
         }
 
         for (int i = 0; i < SIZE + 1; i++) {
@@ -133,28 +258,34 @@ int main(int argv, char** argc) {
         }
 
         // PRINT RESULTS
-        cout << i << "-" << ii << ":\t\t" << rolls[count].chance << "\t\t";
+        cout << dices[0];
+        for (int i = 1; i < dices.size(); i++) {
+            cout << "-" << dices[i];
+        }
+        cout << ":\t\t" << rolls[count].permutations << "\t\t" << rolls[count].combinations << "\t\t";
         for (int i = 0; i < SIZE + 1; i++) {
             cout << float(distribution[i]) / float(TESTS) << "\t";
         }
         cout << endl;
 
         count++;
-        ii++;
-        if (i < ii) {
-            ii = 1;
-            i++;
+        it = SIZE - 1;
+        dices[it]++;
+        while ((it > 0) && (dices[it-1] < dices[it])) {
+            dices[it] = 1;
+            dices[it - 1]++;
+            it--;
         }
     }
 
     count = 0;
     for (roll r : rolls) {
-        count += r.chance;
+        count += r.permutations;
     }
     cout << "Possible rolls: " << count << endl;
 
-    saveX(rolls, SIZE);
-    saveY(rolls, SIZE);
+    // saveX(rolls, SIZE);
+    // saveY(rolls, SIZE);
 
     return 0;
 
