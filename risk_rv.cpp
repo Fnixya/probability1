@@ -74,8 +74,35 @@ void print_vector(vector<int> v) {
     cout << endl;
 }
 
-
 void saveX(vector<roll> rolls, int SIZE) {
+    // Sort for Random Variable X: the roll with most chances to win is the greatest
+    ofstream file;
+    file.open("randomVariableX.txt");
+    file << "Random Variable X: the rolls are sorted as a vector" << endl;
+    file << "\t\t\t" << "Sample\t\t" << "perm..\t" << "comb..\t" << "cum..\t" << "0\t1\t2\n" << endl;
+
+    int count = 0, cummulation = 0;
+    for (roll r : rolls) {        
+        file << count++ << " >>\t\t" << r.dices[0];
+        for (int i = 1; i < r.dices.size(); i++) {
+            file << "-" << r.dices[i];
+        }
+
+        cummulation += r.permutations;
+        file << ":\t\t" << r.permutations << "\t\t" << r.combinations << "\t\t" << cummulation << "\t\t";
+        for (int i = 0; i < SIZE + 1; i++) {
+            file << r.distribution[i] << "\t\t";
+        }
+        file << endl;
+    }
+
+    file << endl << "Total possible rolls: " << cummulation << endl;
+
+    file.close();
+}
+
+
+void saveY(vector<roll> rolls, int SIZE) {
     // Sort for Random Variable X: the roll with most chances to win is the greatest
     sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
         if (a.distribution[0] < b.distribution[0]) {
@@ -89,15 +116,15 @@ void saveX(vector<roll> rolls, int SIZE) {
     });
 
     ofstream file;
-    file.open("randomVariableX.txt");
-    file << "Random Variable X: the roll with most chances to win is the greatest" << endl;
+    file.open("randomVariableY.txt");
+    file << "Random Variable Y: the roll with most chances to win is the greatest" << endl;
     file << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
     for (roll r : rolls) {        
         file << r.dices[0];
         for (int i = 1; i < r.dices.size(); i++) {
             file << "-" << r.dices[i];
         }
-        file << ":\t\t" << r.permutations << "\t\t";
+        file << ":\t\t" << r.permutations << "\t\t" << r.combinations << "\t\t";
         for (int i = 0; i < SIZE + 1; i++) {
             file << r.distribution[i] << "\t\t";
         }
@@ -106,7 +133,7 @@ void saveX(vector<roll> rolls, int SIZE) {
     file.close();
 }
 
-void saveY(vector<roll> rolls, int SIZE) {
+void saveZ(vector<roll> rolls, int SIZE) {
     // Sort for Random Variable Y: the roll with most chances to not lose is the greatest
     sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
         if (a.distribution[2] > b.distribution[2]) {
@@ -118,8 +145,8 @@ void saveY(vector<roll> rolls, int SIZE) {
 
 
     ofstream file2;
-    file2.open("randomVariableY.txt");
-    file2 << "Random Variable Y: the roll with most chances to not lose is the greatest" << endl;
+    file2.open("randomVariableZ.txt");
+    file2 << "Random Variable Z: the roll with most chances to not lose is the greatest" << endl;
     file2 << "Combination\tOccurrences\t\t0\t1\t2\n" << endl;
     for (roll r : rolls) {
         file2 << r.dices[0];
@@ -149,9 +176,10 @@ int main(int argv, char** argc) {
                 dices(SIZE, 1);
     roll rr = {dices, 0, 0, vector<float>(SIZE + 1, 0)};
 
+    // Define total number of possible relevant rolls
     int total_rolls = 0;
     for (int i = 1; i <= 6; i++) {
-        total_rolls += pow(i, SIZE);
+        total_rolls += pow(i, SIZE - 1);
     }
     vector<roll> rolls(total_rolls, rr);
 
@@ -167,12 +195,8 @@ int main(int argv, char** argc) {
             distribution[challenge(red_size, blue_size, dices)]++;
         }
 
-        cout << "!";    
-
         // UPDATE ROLL INFORMATION
         rolls[count].dices = dices;
-
-        cout << "!";
 
         // Iterar dados extras
         set<int> s;
@@ -284,8 +308,9 @@ int main(int argv, char** argc) {
     }
     cout << "Possible rolls: " << count << endl;
 
-    // saveX(rolls, SIZE);
+    saveX(rolls, SIZE);
     // saveY(rolls, SIZE);
+    // saveZ(rolls, SIZE);
 
     return 0;
 
