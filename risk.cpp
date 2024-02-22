@@ -5,13 +5,13 @@
 #include <vector>
 using namespace std;
 
-int tirada(int d_rojos, int d_azules) {
+int tirada(int d_rojos, int d_azules, int lados) {
   vector<int> t_rojos, t_azules;      // tiradas de cada dado
   for (int i = 0; i < d_rojos; i++) { // rojo tira sus dados
-    t_rojos.push_back(rand() % 6 + 1);
+    t_rojos.push_back(rand() % lados + 1);
   }
   for (int i = 0; i < d_azules; i++) { // azul tira sus dados
-    t_azules.push_back(rand() % 6 + 1);
+    t_azules.push_back(rand() % lados + 1);
   }
   int perdidas_r = 0;
   sort(t_rojos.begin(), t_rojos.end());
@@ -27,10 +27,9 @@ int tirada(int d_rojos, int d_azules) {
   return perdidas_r;
 }
 
-
 int main() {
   srand(time(NULL));
-  int d_rojos, d_azules, TESTS = 1000000;
+  int d_rojos, d_azules, lados = 6, TESTS = 1000000;
 
   cout << "dados rojos vs dados azules\n";
   cin >> d_rojos >> d_azules;
@@ -40,7 +39,7 @@ int main() {
   vector<int> distribution(min(d_rojos, d_azules) + 1, 0);
 
   for (int i = 0; i < TESTS; i++) {
-    distribution[tirada(d_rojos, d_azules)]++;
+    distribution[tirada(d_rojos, d_azules, lados)]++;
   }
 
   for (int i = 0; i < mn + 1; i++) {
