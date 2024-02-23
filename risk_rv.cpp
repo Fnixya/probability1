@@ -124,7 +124,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
         file << ", " << r.permutations;  
     }
     file << ")" << endl
-        << "z <- c(";
+        << "cumsumrv" << type << r_size << b_size << " <- c(";
     
     int cummulation = 0;
     for (roll r : rolls) {    
@@ -303,10 +303,7 @@ int main(int argv, char** argc) {
 
     // Define total number of possible relevant rolls
     int total_rolls = 0;
-    for (int i = 1; i <= 6; i++) {
-        total_rolls += pow(i, SIZE - 1);
-    }
-    vector<roll> rolls(total_rolls, rr);
+    vector<roll> rolls;
 
     cout << "Defeated\tPermutations\tCombinations";
     for (int i = 0; i < SIZE + 1; i++) {
@@ -321,6 +318,7 @@ int main(int argv, char** argc) {
         }
 
         // UPDATE ROLL INFORMATION
+        rolls.push_back(rr);
         rolls[count].dices = dices;
 
         // Iterar dados extras
