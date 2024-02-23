@@ -6,6 +6,7 @@
 #include "map"
 #include "math.h"
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -74,7 +75,9 @@ void print_vector(vector<int> v) {
     cout << endl;
 }
 
-void genRdata(vector<roll> rolls, int SIZE, char type) {
+void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
+    string file_name = "data/rv" + string(1, type) + "data" + to_string(r_size) + "-" + to_string(b_size) + ".txt";
+    cout << file_name << endl;
     switch (type) {
         case 'Y': {
             sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
@@ -87,6 +90,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type) {
                 
                 return false;
             });
+
             break;
         }
         case 'Z': {
@@ -97,6 +101,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type) {
                 
                 return false;
             });
+
             break;
         }
     }
@@ -104,7 +109,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type) {
 
 
     ofstream file;
-    file.open("rvXdata.txt");
+    file.open(file_name);
     file << "x <- c(";
 
     // file << "\t\t\t" << "Sample\t\t" << "perm..\t" << "comb..\t" << "cum..\t" << "0\t1\t2\n" << endl;
@@ -431,10 +436,10 @@ int main(int argv, char** argc) {
     saveX(rolls, SIZE);
     // saveY(rolls, SIZE);
     // saveZ(rolls, SIZE);
-    
-    // genRdata(rolls, SIZE, 'X');
-    // genRdata(rolls, SIZE, 'Y');
-    genRdata(rolls, SIZE, 'Z');
+
+    genRdata(rolls, SIZE, 'X', red_size, blue_size);
+    // genRdata(rolls, SIZE, 'Y', red_size, blue_size);
+    // genRdata(rolls, SIZE, 'Z', red_size, blue_size);
 
     return 0;
 
