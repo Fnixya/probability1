@@ -1,22 +1,7 @@
 #library(ggplot2) 
 
 # Random variable X ordenado por combinaciones 1-1, 2-1, 2-2, ....
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # CDF
-# Proability mass function
 
 # Scenario (n vs 1)
 cumsumrvX11 <- c(0, 1, 2, 3, 4, 5, 6, 6) / 6
@@ -43,7 +28,7 @@ matplot(
     0:22, 
     cbind(cumsumrvX22, cumsumrvX32, cumsumrvX42), 
     type='s',
-    col = c("brown", "purple", "red"),
+    col = c("brown", "purple", "blue"),
     do.points = TRUE, pch = 16,col.points = "blue"
     )
 legend("bottomright", legend = c("2 vs 2", "3 vs 2", "4 vs 2"), 
