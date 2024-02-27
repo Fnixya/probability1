@@ -219,8 +219,10 @@ vector<roll> simulate(int red_size, int blue_size, int TESTS) {
         // TESTS
         vector<int> distribution(SIZE + 1, 0);
 
+        // WINCHANCE COMPUTED WITH METHANPHETAMINE
         get_percentage(red_size, blue_size, dices, distribution);
 
+        // WINCHANCE COMPUTED WITH COMPUTATIONS
         // for (int i = 0; i < TESTS; i++) {
         //     distribution[challenge(red_size, blue_size, dices)]++;
         // }

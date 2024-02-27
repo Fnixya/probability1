@@ -24,15 +24,16 @@ legend("bottomright", legend = c("1 vs 1", "2 vs 1", "3 vs 1", "4 vs 1"),
 cumsumrvX22 <- c(0, 1, 3, 4, 6, 8, 9, 11, 13, 15, 16, 18, 20, 22, 24, 25, 27, 29, 31, 33, 35, 36, 36) / 36
 cumsumrvX32 <- c(0, 1, 4, 8, 11, 20, 27, 30, 39, 54, 64, 67, 76, 91, 112, 125, 128, 137, 152, 173, 200, 216, 216) / 216
 cumsumrvX42 <- c(0, 1, 5, 16, 20, 48, 81, 85, 113, 189, 256, 260, 288, 364, 512, 625, 629, 657, 733, 881, 1125, 1296, 1296) / 1296
+color2 <- c("brown", "purple", "blue")
 matplot(
     0:22, 
     cbind(cumsumrvX22, cumsumrvX32, cumsumrvX42), 
     type='s',
-    col = c("brown", "purple", "blue"),
+    col = color2,
     do.points = TRUE, pch = 16,col.points = "blue"
     )
 legend("bottomright", legend = c("2 vs 2", "3 vs 2", "4 vs 2"), 
-        col = c("brown", "purple", "red"),
+        col = color2,
         lty = 1)
 
 
