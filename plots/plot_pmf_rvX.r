@@ -3,6 +3,25 @@
 
 # ALL PMF GRAPHS
 set.seed(1)
+
+pmfrvX11 <- c(1, 1, 1, 1, 1, 1)
+barplot(pmfrvX11, col="light blue")
+
+pmfrvX21 <- c(1, 3, 5, 7, 9, 11)
+barplot(pmfrvX21, col="light blue")
+
+pmfrvX22 <- c(1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1)
+barplot(pmfrvX22, col="light blue")
+
+pmfrvX31 <- c(1, 7, 19, 37, 61, 91)
+barplot(pmfrvX31, col="light blue")
+
+pmfrvX32 <- c(1, 3, 4, 3, 9, 7, 3, 9, 15, 10, 3, 9, 15, 21, 13, 3, 9, 15, 21, 27, 16)
+barplot(pmfrvX32, col="light blue")
+
+# pmfrvX33 <- c(1, 3, 3, 1, 3, 6, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 6, 6, 6, 3, 3, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 6, 6, 6, 3, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 1)
+# barplot(pmfrvX33, col="light blue")
+
 # 1-1
 rvx11 <- c(0, 1, 2, 3, 4, 5)
 barplot(table(rvx11), col="light blue")

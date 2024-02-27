@@ -15,7 +15,6 @@ matplot(
     cbind(cumsumrvY11, cumsumrvY21, cumsumrvY31, cumsumrvY22, cumsumrvY32), 
     type='s',
     col = c("brown", "purple", "red", "black", "orange"),
-    do.points = TRUE, pch = 16,col.points = "blue"
     )
 
 # Scenario (n vs 1)
