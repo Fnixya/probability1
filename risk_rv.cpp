@@ -292,15 +292,15 @@ vector<roll> simulate(int red_size, int blue_size, int TESTS) {
 
         // PRINT RESULTS
         cout << dices[0];
-        for (int i = 1; i < dices.size(); i++) {
-            cout << "-" << dices[i];
-        }
-        cout << ":\t\t" << rolls[count].permutations << "\t\t" << rolls[count].combinations << "\t\t";
-        for (int i = 0; i < SIZE + 1; i++) {
-            // cout << float(distribution[i]) / float(TESTS) << "\t";
-            cout << distribution[i] / pow(6, blue_size) << "\t";
-        }
-        cout << endl;
+        // for (int i = 1; i < dices.size(); i++) {
+        //     cout << "-" << dices[i];
+        // }
+        // cout << ":\t\t" << rolls[count].permutations << "\t\t" << rolls[count].combinations << "\t\t";
+        // for (int i = 0; i < SIZE + 1; i++) {
+        //     // cout << float(distribution[i]) / float(TESTS) << "\t";
+        //     cout << distribution[i] / pow(6, blue_size) << "\t";
+        // }
+        // cout << endl;
 
         count++;
         it = SIZE - 1;
@@ -364,27 +364,31 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     for (roll r : rolls) {        
         file << ", " << count++;  
     }
-    file << ")" << endl
-        << "pmfrv" << type << r_size << b_size << " <- c(";
-    
-    for (roll r : rolls) {        
-        file << ", " << r.permutations;  
-    }
-    file << ")" << endl
-        << "cumsumrv" << type << r_size << b_size << " <- c(";
+    file << ")" << endl;
     
     int cummulation = 0;
+    file << "cumsumrv" << type << r_size << b_size << " <- c(";
     for (roll r : rolls) {    
         cummulation += r.permutations;    
      
         file << ", " << cummulation;  
     }
-    file << ")" << endl
-        << "winChancerv" << type << r_size << b_size << " <- c(";
+    file << ")" << endl;
 
-    for (roll r : rolls) {    
-        cummulation += r.permutations;    
-     
+    file << "pmfrv" << type << r_size << b_size << " <- c(";
+    float mean = 0;
+    count = 0;
+    for (roll r : rolls) {        
+        mean += (float)count++ * (float)r.permutations;
+        file << ", " << r.permutations;
+    }
+    file << ")" << endl;
+    
+    file << "expectation <- " << mean / (float)cummulation << endl; 
+
+    file << "winChancerv" << type << r_size << b_size << " <- c(";
+
+    for (roll r : rolls) {         
         file << ", " << r.distribution[0];  
     }
     file << ")" << endl
@@ -393,15 +397,27 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     for (roll r : rolls) {    
         file << ", " << r.distribution[b_size];  
     }
-    file << ")" << endl
-        << "xx <- c(";
+    file << ")" << endl;
     
-    count = 0;
-    for (roll r : rolls) {    
-        for (int i = 0; i < r.permutations; i++) {
-            file << ", " << count;
+    // file << "xx <- c(";
+    // count = 0;
+    // for (roll r : rolls) {    
+    //     for (int i = 0; i < r.permutations; i++) {
+    //         file << ", " << count;
+    //     }
+    //     count ++;  
+    // }
+    // file << ")" << endl;
+
+    file << "battle_out_distribution <- c(";
+    vector<float> b_out_dist(b_size + 1, 0);
+    for (roll r : rolls) {   
+        for (int i = 0; i < b_size + 1; i++) {
+            b_out_dist[i] += r.distribution[i] * r.permutations;
         }
-        count ++;  
+    }
+    for (int i = 0; i < b_size + 1; i++) {
+        file << ", " << (float)b_out_dist[i] / (float)cummulation;
     }
     file << ")" << endl;
 
