@@ -1,0 +1,9 @@
+x <- c(, 0, 1, 2, 3, 4, 5)
+cumsumrvX14 <- c(, 1, 2, 3, 4, 5, 6)
+pmfrvX14 <- c(, 1, 1, 1, 1, 1, 1)
+expectationX14 <- 2.5
+medianX14 <- 3
+varianceX14 <- 2.91667
+winChancervX14 <- c(, 0, 0.000771605, 0.0123457, 0.0625, 0.197531, 0.482253)
+loseChancervX14 <- c(, 1, 0.999228, 0.987654, 0.9375, 0.802469, 0.517747)
+battle_out_distribution <- c(, 0.1259, 0.8741)

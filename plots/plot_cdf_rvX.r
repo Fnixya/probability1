@@ -19,6 +19,7 @@ legend("bottomright", legend = c("1 vs 1", "2 vs 1", "3 vs 1", "4 vs 1"),
         col = c("brown", "purple", "red", "black"),
         lty = 1)
  
+mean(c(1, 2, 3, 4, 5, 6))
 
 # Scenario (n vs 2)
 cumsumrvX22 <- c(0, 1, 3, 4, 6, 8, 9, 11, 13, 15, 16, 18, 20, 22, 24, 25, 27, 29, 31, 33, 35, 36, 36) / 36
@@ -35,9 +36,6 @@ matplot(
 legend("bottomright", legend = c("2 vs 2", "3 vs 2", "4 vs 2"), 
         col = color2,
         lty = 1)
-
-
-
 
 
 # Scenario (n vs 3)

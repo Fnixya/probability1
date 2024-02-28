@@ -146,6 +146,7 @@ int permute(int red_size, int blue_size, vector<int> &dices) {
 
 
 void get_percentage(int red_size, int blue_size, vector<int> &red_dices, vector<int> &distribution) {
+    int SIZE = min(red_size, blue_size);
     vector<int> blue_dices(blue_size, 1);
     while (blue_dices[0] < 7) {
         // 1 Obtener combinacion de dados : blue_dices
@@ -158,7 +159,7 @@ void get_percentage(int red_size, int blue_size, vector<int> &red_dices, vector<
 
         // 3
         int defeated = 0;
-        for (int i = 0; i < blue_size; i++) {
+        for (int i = 0; i < SIZE; i++) {
             if (red_dices[i] <= blue_dices[i]) {
                 defeated += 1;
             }
@@ -292,15 +293,15 @@ vector<roll> simulate(int red_size, int blue_size, int TESTS) {
 
         // PRINT RESULTS
         cout << dices[0];
-        // for (int i = 1; i < dices.size(); i++) {
-        //     cout << "-" << dices[i];
-        // }
-        // cout << ":\t\t" << rolls[count].permutations << "\t\t" << rolls[count].combinations << "\t\t";
-        // for (int i = 0; i < SIZE + 1; i++) {
-        //     // cout << float(distribution[i]) / float(TESTS) << "\t";
-        //     cout << distribution[i] / pow(6, blue_size) << "\t";
-        // }
-        // cout << endl;
+        for (int i = 1; i < dices.size(); i++) {
+            cout << "-" << dices[i];
+        }
+        cout << ":\t\t" << rolls[count].permutations << "\t\t" << rolls[count].combinations << "\t\t";
+        for (int i = 0; i < SIZE + 1; i++) {
+            // cout << float(distribution[i]) / float(TESTS) << "\t";
+            cout << distribution[i] / pow(6, blue_size) << "\t";
+        }
+        cout << endl;
 
         count++;
         it = SIZE - 1;
@@ -321,10 +322,7 @@ vector<roll> simulate(int red_size, int blue_size, int TESTS) {
     return rolls;
 }
 
-void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
-    string file_name = "data/rv" + string(1, type) + "/rv" + string(1, type) + "data" + to_string(r_size) + "-" + to_string(b_size) + ".txt";
-    cout << "Saving in: " << file_name << endl;
-    
+void sortRolls(vector<roll> &rolls, char type) {    
     switch (type) {
         case 'Y': {
             sort(rolls.begin(), rolls.end(), [](roll a, roll b) {
@@ -353,7 +351,15 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
         }
     }
 
+    return;
+};
 
+
+void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
+    string file_name = "data/rv" + string(1, type) + "/rv" + string(1, type) + "data" + to_string(r_size) + "-" + to_string(b_size) + ".txt";
+    cout << "Saving in: " << file_name << endl;
+    
+    sortRolls(rolls, type);
 
     ofstream file;
     file.open(file_name);
@@ -367,24 +373,38 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     file << ")" << endl;
     
     int cummulation = 0;
+    float median;
+    bool assigned = false;
+    count = 0;
     file << "cumsumrv" << type << r_size << b_size << " <- c(";
     for (roll r : rolls) {    
         cummulation += r.permutations;    
      
+        if (cummulation > pow(6, r_size) / 2 && !assigned) {
+            median = cummulation == pow(6, r_size) / 2 ? count - .5 : count;
+            assigned = true;
+        }
+
+        count++;
         file << ", " << cummulation;  
     }
     file << ")" << endl;
-
+    
     file << "pmfrv" << type << r_size << b_size << " <- c(";
-    float mean = 0;
+    float mean = 0, e_x2 = 0;
     count = 0;
     for (roll r : rolls) {        
-        mean += (float)count++ * (float)r.permutations;
+        mean += (float)count * (float)r.permutations;
+        e_x2 += (float)pow(count++, 2) * (float)r.permutations;
         file << ", " << r.permutations;
     }
     file << ")" << endl;
     
-    file << "expectation <- " << mean / (float)cummulation << endl; 
+    mean /= (float)(pow(6, r_size));
+    e_x2 /= (float)(pow(6, r_size));
+    file << "expectation" << type << r_size << b_size << " <- " << mean << endl; 
+    file << "median" << type << r_size << b_size << " <- " << median << endl;
+    file << "variance" << type << r_size << b_size << " <- " << e_x2 - pow(mean, 2) << endl;
 
     file << "winChancerv" << type << r_size << b_size << " <- c(";
 
@@ -395,7 +415,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
         << "loseChancerv" << type << r_size << b_size << " <- c(";
 
     for (roll r : rolls) {    
-        file << ", " << r.distribution[b_size];  
+        file << ", " << r.distribution[SIZE];  
     }
     file << ")" << endl;
     
@@ -410,13 +430,13 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     // file << ")" << endl;
 
     file << "battle_out_distribution <- c(";
-    vector<float> b_out_dist(b_size + 1, 0);
+    vector<float> b_out_dist(SIZE + 1, 0);
     for (roll r : rolls) {   
-        for (int i = 0; i < b_size + 1; i++) {
+        for (int i = 0; i < SIZE + 1; i++) {
             b_out_dist[i] += r.distribution[i] * r.permutations;
         }
     }
-    for (int i = 0; i < b_size + 1; i++) {
+    for (int i = 0; i < SIZE + 1; i++) {
         file << ", " << (float)b_out_dist[i] / (float)cummulation;
     }
     file << ")" << endl;
@@ -523,13 +543,18 @@ int main(int argv, char** argc) {
     cout << fixed << setprecision(4);
     cout << "Define the battle scenario (number of red dice VS number of blue dice): ";
     cin >> red_size >> blue_size;
+    SIZE = min(blue_size, red_size);
     
     while((blue_size != 0) || (red_size != 0)) {
-        if ((red_size < blue_size) || (red_size < 1) || (blue_size < 1)) {
+        if ((red_size < 1) || (blue_size < 1)) {
             cout << "Invalid input" << endl;
             cout << "Define the battle scenario (number of red dice VS number of blue dice): ";
             cin >> red_size >> blue_size;
             continue;
+        }
+
+        if ((red_size < blue_size)) {
+            cout << "Solution might be wrong" << endl;
         }
 
         vector<roll> rolls = simulate(red_size, blue_size, TESTS);
@@ -538,7 +563,7 @@ int main(int argv, char** argc) {
         // // saveY(rolls, SIZE);
         // // saveZ(rolls, SIZE);
 
-        genRdata(rolls, blue_size, 'X', red_size, blue_size);
+        genRdata(rolls, SIZE, 'X', red_size, blue_size);
         // genRdata(rolls, blue_size, 'Y', red_size, blue_size);
         // genRdata(rolls, SIZE, 'Z', red_size, blue_size);
         
