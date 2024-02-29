@@ -366,7 +366,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     file << "x <- c(";
 
     // file << "\t\t\t" << "Sample\t\t" << "perm..\t" << "comb..\t" << "cum..\t" << "0\t1\t2\n" << endl;
-    int count = 0;
+    int count = 1;
     for (roll r : rolls) {        
         file << ", " << count++;  
     }
@@ -375,13 +375,14 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     int cummulation = 0;
     float median;
     bool assigned = false;
-    count = 0;
+    count = 1;
     file << "cumsumrv" << type << r_size << b_size << " <- c(";
     for (roll r : rolls) {    
         cummulation += r.permutations;    
      
-        if (cummulation > pow(6, r_size) / 2 && !assigned) {
+        if (cummulation >= pow(6, r_size) / 2 && !assigned) {
             median = cummulation == pow(6, r_size) / 2 ? count - .5 : count;
+            cout << "Median: " << cummulation << pow(6, r_size) << endl;
             assigned = true;
         }
 
@@ -392,7 +393,7 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     
     file << "pmfrv" << type << r_size << b_size << " <- c(";
     float mean = 0, e_x2 = 0;
-    count = 0;
+    count = 1;
     for (roll r : rolls) {        
         mean += (float)count * (float)r.permutations;
         e_x2 += (float)pow(count++, 2) * (float)r.permutations;

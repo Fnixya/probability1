@@ -4,21 +4,38 @@
 # ALL PMF GRAPHS
 set.seed(1)
 
-pmfrvX11 <- c(1, 1, 1, 1, 1, 1)
-barplot(pmfrvX11, col="light blue")
+win.graph()
+par(mfrow=c(1, 2))
+
+
+pmfrvX11 <- data.frame(
+    "x" = 1:6,
+    "y" = c(1, 1, 1, 1, 1, 1) / 6
+)
+barplot(name=pmfrvX11$x, height=pmfrvX11$y, ylim=c(0, 1), col="light blue", xlabel="X", ylabel="P(X)", main="PMF of X for 1-1")
+
+pmfrvX12 <- c(1, 1, 1, 1, 1, 1) / 6
+barplot(name=1:6, height=pmfrvX12,
+     ylim=c(0, 1),col="light blue",  xlabel="X", ylabel="P(X)", main="PMF of X for 1-2")
 
 pmfrvX21 <- c(1, 3, 5, 7, 9, 11)
-barplot(pmfrvX21, col="light blue")
+barplot(name=1:6, height=pmfrvX21 / 36, 
+    ylim=c(0, 1),col="light blue",  xlabel="X", ylabel="P(X)", main="PMF of X for 2-1")
 
 pmfrvX22 <- c(1, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1)
-barplot(pmfrvX22, col="light blue")
+barplot(name=1:21, height= pmfrvX22 / 36, 
+    ylim=c(0, 1),col="light blue",  xlabel="X", ylabel="P(X)", main="PMF of X for 2-2")
 
 pmfrvX31 <- c(1, 7, 19, 37, 61, 91)
-barplot(pmfrvX31, col="light blue")
+barplot(name=1:6, height=pmfrvX31 / 216, 
+    ylim=c(0, 1),col="light blue",  xlabel="X", ylabel="P(X)", main="PMF of X for 3-1")
 
 pmfrvX32 <- c(1, 3, 4, 3, 9, 7, 3, 9, 15, 10, 3, 9, 15, 21, 13, 3, 9, 15, 21, 27, 16)
-barplot(pmfrvX32, col="light blue")
+barplot(name=1:21, height=pmfrvX32 / 216, 
+    ylim=c(0, 1),col="light blue",  xlabel="X", ylabel="P(X)", main="PMF of X for 3-2")
 
+
+## 3-3
 pmfrvX33 <- c(1, 3, 3, 1, 3, 6, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 6, 6, 6, 3, 3, 3, 3, 3, 1, 3, 6, 3, 6, 6, 3, 6, 6, 6, 3, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 1)
 barplot(pmfrvX33, col="light blue")
 

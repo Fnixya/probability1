@@ -1,8 +1,8 @@
-x <- c(, 0, 1, 2, 3, 4, 5)
+x <- c(, 1, 2, 3, 4, 5, 6)
 cumsumrvX12 <- c(, 1, 2, 3, 4, 5, 6)
 pmfrvX12 <- c(, 1, 1, 1, 1, 1, 1)
-expectationX12 <- 2.5
-medianX12 <- 3
+expectationX12 <- 3.5
+medianX12 <- 4
 varianceX12 <- 2.91667
 winChancervX12 <- c(, 0, 0.0277778, 0.111111, 0.25, 0.444444, 0.694444)
 loseChancervX12 <- c(, 1, 0.972222, 0.888889, 0.75, 0.555556, 0.305556)

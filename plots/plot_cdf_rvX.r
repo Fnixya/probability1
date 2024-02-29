@@ -21,6 +21,22 @@ legend("bottomright", legend = c("1 vs 1", "2 vs 1", "3 vs 1", "4 vs 1"),
  
 mean(c(1, 2, 3, 4, 5, 6))
 
+#
+win.graph()
+par(mfrow=c(1, 1))
+cumsumrvX32 <- c(0, 1, 4, 8, 11, 20, 27, 30, 39, 54, 64, 67, 76, 91, 112, 125, 128, 137, 152, 173, 200, 216, 216) / 216
+matplot(
+    0:22,
+    cumsumrvX32, 
+    type='s', lwd = 2, col = "blue", xlab = "CDF for 3-2", ylab = ""
+    )
+grid(nx = 4, ny = 4,
+     lty = 2,      # Grid line type
+     col = "gray", # Grid line color
+     lwd = 1)
+
+
+
 # Scenario (n vs 2)
 cumsumrvX22 <- c(0, 1, 3, 4, 6, 8, 9, 11, 13, 15, 16, 18, 20, 22, 24, 25, 27, 29, 31, 33, 35, 36, 36) / 36
 cumsumrvX32 <- c(0, 1, 4, 8, 11, 20, 27, 30, 39, 54, 64, 67, 76, 91, 112, 125, 128, 137, 152, 173, 200, 216, 216) / 216
