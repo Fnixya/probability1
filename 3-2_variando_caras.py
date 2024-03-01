@@ -26,5 +26,5 @@ for i in range(caras + 1):
         dado2 = dado2 + str(ii + 1) + " "
         xaxis.append(dado2)
 
-plt.bar(xaxis, pdf) # cambiar entre cdf o pdf
+plt.bar(xaxis, pdf)  # cambiar entre cdf o pdf
 plt.show()
