@@ -3,10 +3,11 @@
 
 # winchance for n vs 1:
 winChancervX11 <- c(0, 0.166667, 0.333333, 0.5, 0.666667, 0.833333)
-matplot( 
+barplot( 
     winChancervX11, 
     type='s',
-    col = c("brown", "purple", "red", "black"),
+    # col = c("brown", "purple", "red", "black"),
+    col = "light blue",
     ylim = c(0, 1),
     do.points = TRUE, pch = 16,col.points = "blue"
     )

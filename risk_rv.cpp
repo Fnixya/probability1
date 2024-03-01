@@ -373,17 +373,26 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     file << ")" << endl;
     
     int cummulation = 0;
-    float median;
-    bool assigned = false;
+    float median, q1, q3;
+    bool assigned_m = false, assigned_q1 = false, assigned_q3 = false;
     count = 1;
     file << "cumsumrv" << type << r_size << b_size << " <- c(";
     for (roll r : rolls) {    
         cummulation += r.permutations;    
      
-        if (cummulation >= pow(6, r_size) / 2 && !assigned) {
-            median = cummulation == pow(6, r_size) / 2 ? count - .5 : count;
-            cout << "Median: " << cummulation << pow(6, r_size) << endl;
-            assigned = true;
+        if (cummulation >= pow(6, r_size) / 2 && !assigned_m) {
+            median = cummulation == pow(6, r_size) / 4  ? count - .5 : count;
+            assigned_m = true;
+        }
+
+        if (cummulation >= pow(6, r_size) / 4 && !assigned_q1) {
+            q1 = cummulation == pow(6, r_size) / 2 ? count - .5 : count;
+            assigned_q1 = true;
+        }
+
+        if (cummulation >= 3 * pow(6, r_size) / 4 && !assigned_q3) {
+            q3 = cummulation == 3 * pow(6, r_size) / 4  ? count - .5 : count;
+            assigned_q3 = true;
         }
 
         count++;
@@ -406,6 +415,8 @@ void genRdata(vector<roll> rolls, int SIZE, char type, int r_size, int b_size) {
     file << "expectation" << type << r_size << b_size << " <- " << mean << endl; 
     file << "median" << type << r_size << b_size << " <- " << median << endl;
     file << "variance" << type << r_size << b_size << " <- " << e_x2 - pow(mean, 2) << endl;
+    file << "q1" << type << r_size << b_size << " <- " << q1 << endl;
+    file << "q3" << type << r_size << b_size << " <- " << q3 << endl;
 
     file << "winChancerv" << type << r_size << b_size << " <- c(";
 
@@ -570,6 +581,7 @@ int main(int argv, char** argc) {
         
         cout << "Define the battle scenario (number of red dice VS number of blue dice): ";
         cin >> red_size >> blue_size;
+        SIZE = min(blue_size, red_size);
     }
 
     return 0;
