@@ -1,3 +1,5 @@
+// Da a elegir el numero de dados por consola, las caras hay que cambiarlas en main
+
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
